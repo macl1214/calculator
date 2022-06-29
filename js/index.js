@@ -61,13 +61,17 @@ function assignOp(e) {
   const op = e.target.id;
 
   computedResult = false;
-
+  
   if (result !== "") {
     reassignVals();
   }
-
+  
   if (num2 === "") {
     if (operator !== "") {
+      
+      // Clear output in case there is an error from previous input
+      output = "";
+      
       replaceOpInInput(op);
     }
 
@@ -126,7 +130,7 @@ function attemptOperation() {
 
 function reassignVals() {
 
-  num1 = output;
+  num1 = result;
   operator = "";
   num2 = "";
 
