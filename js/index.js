@@ -115,6 +115,10 @@ function attemptOperation() {
     output = "ERROR";
     return;
   }
+
+  if (computedResult === true) {
+    return;
+  }
   
   input += " = ";
   computedResult = true;
@@ -139,6 +143,8 @@ function reassignVals() {
 }
 
 function clear() {
+  computedResult = false; 
+  
   num1 = "0";
   num2 = "";
   
