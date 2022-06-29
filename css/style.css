@@ -1,0 +1,71 @@
+:root {
+  --custom-border-radius: 5%;
+}
+
+body {
+  background-color: #f2f2f2;
+}
+
+.title {
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+
+  height: 600px;
+  width: 400px;
+  border-radius: var(--custom-border-radius);
+  padding: 16px;
+
+  background-color: #dedede;
+
+  margin: 5px auto;
+}
+
+.screen {
+  background-color: #e4fce1;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  box-sizing: border-box;
+  border-radius: var(--custom-border-radius);
+  padding: 16px;
+
+  width: 100%;
+  height: 40%;
+}
+
+/* .input {
+
+} */
+
+.output {
+  align-self: flex-end;
+}
+
+.calc-buttons {
+  width: 100%;
+  height: 60%;
+}
+/* 
+.numbers {
+
+}
+
+.options {
+
+}
+
+.clear {
+
+}
+
+.equals {
+
+} */
