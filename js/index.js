@@ -178,7 +178,10 @@ function divide(n1, n2) {
   return n1 / n2;
 }
 
-function operate(operator, n1, n2) {
+function operate(operator, stringNum1, stringNum2) {
+
+  const n1 = Number.parseFloat(stringNum1);
+  const n2 = Number.parseFloat(stringNum2);
 
   switch(operator) {
     case "add":
