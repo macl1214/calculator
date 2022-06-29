@@ -2,46 +2,155 @@ let num1 = "0";
 let num2 = "";
 let operator = "";
 let result = "";
-let message = "";
+let computedResult = false;
+let input = num1;
+let output = "";
+
+/** Initialize display */
+display();
 
 /** Event Listeners */
 const numButtons = document.querySelectorAll(".number-btn");
 const opButtons = document.querySelectorAll('.operator-btn');
+const equalsButton = document.querySelector('.equals-btn');
+const clearButton = document.querySelector(".clear-btn");
 
-numButtons.forEach(btn => btn.addEventListener('click', assignVal));
-opButtons.forEach(btn => btn.addEventListener('click', assignOp));
+numButtons.forEach(btn => btn.addEventListener('click', (e) => {
+  assignVal(e);
+  display();
+}));
+opButtons.forEach(btn => btn.addEventListener('click', (e) => {
+  assignOp(e);
+  display();
+}));
+equalsButton.addEventListener('click', (e) => {
+  attemptOperation(e);
+  display();
+});
+clearButton.addEventListener('click', () => {
+  clear();
+  display();
+});
 
 /** Event Listener helper functions */
 function assignVal(e) {
   const val = e.target.id;
 
+  if (computedResult) {
+    clear();
+    computedResult = false;
+  }
+
   if (operator === "") {
     if (num1 === "0") {
       num1 = val;
+      input = num1;
     } else {
       num1 += val;
+      input += val;
     }
   } else {
     num2 += val;
+    input += val;
   }
 
-  console.log(`num1:${num1} num2:${num2}`)
+  display();
 }
 
 function assignOp(e) {
   const op = e.target.id;
 
-  if (num2 === "") {
-    operator = op;
-  } else {
-    /** 
-     * num1 and num2 are set, meaning there is already an operation happening
-     * In this case, get the result of the current operation and set to num1
-     */ 
+  computedResult = false;
 
+  if (result !== "") {
+    reassignVals();
   }
 
-  console.log(`num1:${num1} op:${operator} num2:${num2}`);
+  if (num2 === "") {
+    if (operator !== "") {
+      replaceOpInInput(op);
+    }
+
+    operator = op;
+  }
+
+  let symbol = getOpSymbol(op);
+  input += ` ${symbol} `;
+}
+
+function replaceOpInInput(op) {
+  let regex = /\s[^\w\d\s]\s/i;
+  
+  input = input.replace(regex, '');
+}
+
+function getOpSymbol(op) {
+  let symbol = "";
+
+  switch (op) {
+    case "add": 
+      symbol =  "+";
+      break;
+    case "subtract":
+      symbol = "-";
+      break;
+    case "multiply":
+      symbol = "*";
+      break;
+    case "divide":
+      symbol = "/";
+      break;
+  }
+
+  return symbol;
+}
+
+function attemptOperation() {
+  
+  if (operator !== "" && num2 === "") {
+    output = "ERROR";
+    return;
+  }
+  
+  input += " = ";
+  computedResult = true;
+
+  if (operator === "") {
+    result = num1;
+  } else {
+    result = operate(operator, num1, num2);
+  }
+  
+  output = result;
+}
+
+function reassignVals() {
+
+  num1 = output;
+  operator = "";
+  num2 = "";
+
+  output = "";
+  input = num1;
+}
+
+function clear() {
+  num1 = "0";
+  num2 = "";
+  
+  operator = "";
+  result = "";
+
+  input = num1;
+  output = "";
+}
+
+function display() {
+  const inputEl = document.querySelector(".input");
+  const outputEl = document.querySelector(".output");
+
+  inputEl.textContent = input;
+  outputEl.textContent = output;
 }
 
 /** Operation functions */
