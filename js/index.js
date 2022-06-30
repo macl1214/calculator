@@ -35,6 +35,11 @@ clearButton.addEventListener('click', () => {
   display();
 });
 
+decimalButton.addEventListener('click', () => {
+  addDecimal();
+  display();
+});
+
 document.addEventListener('keydown', (e) => {
   assignKeys(e);
   display();
@@ -48,17 +53,26 @@ function assignKeys(e) {
 
   if (operators.includes(key)) {
     assignOp(key, true);
+    console.log("assigned op");
+  } else if (key === ".") {
+    decimalButton.click();
+    console.log("adding decimal");
   } else if (key === "=" || key === "Enter") {
     equalsButton.click();
+    console.log("equals");
   } else if (key === "c") {
     clearButton.click();
+    console.log("clearing");
   } else {
     const num = +key;
 
     if (Number.isInteger(num)) {
       assignVal(key, true);
+      console.log("assigned num");
     } 
   }
+
+  console.log("ignored")
 }
 
 // fromKeyboard used to check if e will be the value from 
@@ -102,7 +116,7 @@ function assignOp(key, fromKeyboard=false) {
   computedResult = false;
   
   if (result !== "") {
-    reassignVals();
+    reassignValues();
   }
 
   assertExpressionExists();
@@ -120,6 +134,35 @@ function assignOp(key, fromKeyboard=false) {
   }
 
   input += ` ${opSymbol} `;
+}
+
+function addDecimal() {
+
+  if (result !== "") {
+    reassignValues();
+  }
+
+  if (operator === "") {
+    
+    if (num1.includes(".")) {
+      return;
+    } else {
+      num1 += "."
+      input += "."
+    }
+  } else {
+    if (num2.includes(".")) {
+      return;
+    } else {
+      if (num2 === "" || num2 === "0") {
+        num2 = "0."
+        input += num2;
+      } else {
+        num2 += ".";
+        input += ".";
+      }
+    }
+  }
 }
 
 function replaceOpInInput(op) {
@@ -166,13 +209,13 @@ function attemptOperation() {
   if (operator === "") {
     result = num1;
   } else {
-    result = operate(operator, num1, num2);
+    result = "" + operate(operator, num1, num2);
   }
   
   output = result;
 }
 
-function reassignVals(keepResult = false) {
+function reassignValues(keepResult = false) {
 
   num1 = result;
   operator = "";
@@ -188,7 +231,7 @@ function assertExpressionExists() {
     
     attemptOperation();
     computedResult = false;
-    reassignVals(true);
+    reassignValues(true);
   }
 }
 
