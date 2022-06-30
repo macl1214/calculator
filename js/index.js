@@ -6,6 +6,8 @@ let computedResult = false;
 let input = num1;
 let output = "";
 
+const operators = ['+', '-', '*', '/'];
+
 /** Initialize display */
 display();
 
@@ -23,8 +25,8 @@ opButtons.forEach(btn => btn.addEventListener('click', (e) => {
   assignOp(e);
   display();
 }));
-equalsButton.addEventListener('click', (e) => {
-  attemptOperation(e);
+equalsButton.addEventListener('click', () => {
+  attemptOperation();
   display();
 });
 clearButton.addEventListener('click', () => {
@@ -32,9 +34,36 @@ clearButton.addEventListener('click', () => {
   display();
 });
 
+document.addEventListener('keydown', (e) => {
+  assignKeys(e);
+  display();
+});
+
 /** Event Listener helper functions */
-function assignVal(e) {
-  const val = e.target.id;
+function assignKeys(e) {
+  const key = e.key;
+
+  console.log(e);
+
+  if (operators.includes(key)) {
+    assignOp(key, true);
+  } else if (key === "=" || key === "Enter") {
+    equalsButton.click();
+  } else if (key === "c") {
+    clearButton.click();
+  } else {
+    const num = +key;
+
+    if (Number.isInteger(num)) {
+      assignVal(key, true);
+    } 
+  }
+}
+
+// fromKeyboard used to check if e will be the value from 
+// the keyboard or from the button 
+function assignVal(key, fromKeyboard=false) {
+  const val = fromKeyboard ? key : key.target.id;
 
   if (computedResult) {
     clear();
@@ -57,29 +86,39 @@ function assignVal(e) {
   display();
 }
 
-function assignOp(e) {
-  const op = e.target.id;
+// fromKeyboard used to check if e will be the value from 
+// the keyboard or from the button 
+function assignOp(key, fromKeyboard=false) {
+  const op = fromKeyboard ? key : key.target.id;
+  let opSymbol = "";
+  
+  if (fromKeyboard) {
+    opSymbol = op;
+  } else {
+    opSymbol = getOpSymbol(op);
+  }
 
   computedResult = false;
   
   if (result !== "") {
     reassignVals();
   }
-  
+
+  assertExpressionExists();
+
   if (num2 === "") {
     if (operator !== "") {
       
       // Clear output in case there is an error from previous input
       output = "";
       
-      replaceOpInInput(op);
+      replaceOpInInput(opSymbol);
     }
 
-    operator = op;
+    operator = opSymbol;
   }
 
-  let symbol = getOpSymbol(op);
-  input += ` ${symbol} `;
+  input += ` ${opSymbol} `;
 }
 
 function replaceOpInInput(op) {
@@ -132,19 +171,29 @@ function attemptOperation() {
   output = result;
 }
 
-function reassignVals() {
+function reassignVals(keepResult = false) {
 
   num1 = result;
   operator = "";
   num2 = "";
 
-  output = "";
+  output = keepResult ? output : "";
+  result = "";
   input = num1;
+}
+
+function assertExpressionExists() {
+  if (num1 !== "" && operator !== "" && num2 !== "" && result === "") {
+    
+    attemptOperation();
+    computedResult = false;
+    reassignVals(true);
+  }
 }
 
 function clear() {
   computedResult = false; 
-  
+
   num1 = "0";
   num2 = "";
   
@@ -190,13 +239,13 @@ function operate(operator, stringNum1, stringNum2) {
   const n2 = Number.parseFloat(stringNum2);
 
   switch(operator) {
-    case "add":
+    case "+":
       return add(n1, n2);
-    case "subtract":
+    case "-":
       return subtract(n1, n2);
-    case "multiply":
+    case "*":
       return multiply(n1, n2);
-    case "divide":
+    case "/":
       return divide(n1, n2);
     default:
       throw new Error("Unknown operator");
