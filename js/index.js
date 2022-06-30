@@ -16,6 +16,7 @@ const numButtons = document.querySelectorAll(".number-btn");
 const opButtons = document.querySelectorAll('.operator-btn');
 const equalsButton = document.querySelector('.equals-btn');
 const clearButton = document.querySelector(".clear-btn");
+const decimalButton = document.querySelector(".decimal-btn");
 
 numButtons.forEach(btn => btn.addEventListener('click', (e) => {
   assignVal(e);
